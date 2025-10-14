@@ -1238,7 +1238,13 @@ if (typeof jQuery === 'undefined') {
   $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
     var $this   = $(this)
     var href    = $this.attr('href')
-    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
+    var selector = $this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    // Only proceed if selector is a safe modal ID selector (starts with #)
+    if (selector && selector.charAt(0) === '#') {
+      var $target = $(document).find(selector)
+    } else {
+      return // unsafe selector, do not proceed
+    }
     var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
     if ($this.is('a')) e.preventDefault()
